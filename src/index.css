@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Bengali:wght@400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  body {
+    @apply font-bengali bg-bg text-textPrimary leading-relaxed tracking-wide antialiased;
+  }
+
+  /* Improve Bengali text rendering */
+  p, span, div, h1, h2, h3, h4, h5, h6 {
+    text-rendering: optimizeLegibility;
+  }
+}
+
+/* Custom scrollbar for better UX */
+::-webkit-scrollbar {
+  width: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background-color: #CBD5E1;
+  border-radius: 20px;
+}
+
+/* Animations */
+@keyframes slideIn {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 0.5; }
+}
+
+.animate-slide-in {
+  animation: slideIn 0.3s ease-out forwards;
+}
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out forwards;
+}
