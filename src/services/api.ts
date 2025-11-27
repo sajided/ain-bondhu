@@ -1,4 +1,4 @@
-import { NewSessionResponse, ChatResponse } from '../types';
+import type { NewSessionResponse, ChatResponse } from '../types';
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 

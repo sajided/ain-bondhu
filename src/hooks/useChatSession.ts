@@ -1,7 +1,7 @@
 import { useState, useEffect, useCallback } from 'react';
 import { api } from '../services/api';
 import { storage } from '../services/storage';
-import { Message, ChatSession } from '../types';
+import type { Message, ChatSession } from '../types';
 
 export const useChatSession = () => {
   const [session, setSession] = useState<ChatSession>({

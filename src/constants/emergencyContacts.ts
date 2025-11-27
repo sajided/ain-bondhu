@@ -1,4 +1,4 @@
-import { EmergencyContact } from '../types';
+import type { EmergencyContact } from '../types';
 
 export const EMERGENCY_CONTACTS: EmergencyContact[] = [
   {
