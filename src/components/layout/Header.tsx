@@ -3,13 +3,20 @@ import React from 'react';
 interface HeaderProps {
   onQuickExit: () => void;
   onToggleSupport: () => void;
+  onNavigateHome: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onQuickExit, onToggleSupport }) => {
+export const Header: React.FC<HeaderProps> = ({ onQuickExit, onToggleSupport, onNavigateHome }) => {
   return (
     <header className="bg-primary text-white p-4 flex justify-between items-center shadow-sm sticky top-[36px] z-40">
       <div className="flex items-center gap-2">
-        <h1 className="text-xl font-bold">আইন বন্ধু</h1>
+        <button
+          type="button"
+          onClick={onNavigateHome}
+          className="text-xl font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
+        >
+          আইন বন্ধু
+        </button>
       </div>
       <div className="flex gap-2">
         <button 

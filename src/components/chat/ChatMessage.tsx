@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Message } from '../../types';
+import type { Message } from '../../types';
 import { detectUrgency } from '../../utils/detectUrgency';
 import { EmergencyAlert } from './EmergencyAlert';
 import { INTENT_TO_LAW_MAPPING } from '../../constants/lawMapping';
@@ -31,8 +31,8 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
         className={`
           max-w-[90%] md:max-w-[85%] rounded-2xl p-5 shadow-sm relative
           ${isUser 
-            ? 'bg-userMsg text-textPrimary rounded-tr-none' 
-            : 'bg-white text-textPrimary rounded-tl-none border border-gray-100 shadow-md'}
+            ? 'bg-green-100 text-textPrimary rounded-tr-none' 
+            : 'bg-gray-80 text-textPrimary rounded-tl-none border border-gray-100 shadow-md'}
         `}
       >
         {isUrgent && <EmergencyAlert />}
@@ -66,9 +66,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           </div>
         )}
 
-        <div className={`text-[10px] mt-2 ${isUser ? 'text-right text-green-800/60' : 'text-left text-gray-400'}`}>
+        {/* <div className={`text-[10px] mt-2 ${isUser ? 'text-right text-green-800/60' : 'text-left text-gray-400'}`}>
           {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </div>
+        </div> */}
       </div>
     </div>
   );

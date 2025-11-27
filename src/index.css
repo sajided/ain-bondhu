@@ -6,7 +6,7 @@
 
 @layer base {
   body {
-    @apply font-bengali bg-bg text-textPrimary leading-relaxed tracking-wide antialiased;
+    @apply font-bengali bg-gradient-to-br from-indigo-50 via-white to-purple-50 text-textPrimary leading-relaxed tracking-wide antialiased;
   }
 
   /* Improve Bengali text rendering */
@@ -42,4 +42,12 @@
 }
 .animate-fade-in {
   animation: fadeIn 0.3s ease-out forwards;
+}
+
+.hide-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
 }

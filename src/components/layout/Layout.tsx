@@ -6,13 +6,23 @@ interface LayoutProps {
   children: React.ReactNode;
   onQuickExit: () => void;
   onToggleSupport: () => void;
+  onNavigateHome: () => void;
 }
 
-export const Layout: React.FC<LayoutProps> = ({ children, onQuickExit, onToggleSupport }) => {
+export const Layout: React.FC<LayoutProps> = ({
+  children,
+  onQuickExit,
+  onToggleSupport,
+  onNavigateHome
+}) => {
   return (
-    <div className="min-h-screen bg-bg flex flex-col font-bengali">
+    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col font-bengali">
       <EmergencyBar />
-      <Header onQuickExit={onQuickExit} onToggleSupport={onToggleSupport} />
+      <Header
+        onQuickExit={onQuickExit}
+        onToggleSupport={onToggleSupport}
+        onNavigateHome={onNavigateHome}
+      />
       <main className="flex-1 max-w-3xl mx-auto w-full p-4 pb-20 flex flex-col">
         {children}
       </main>

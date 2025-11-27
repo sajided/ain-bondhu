@@ -22,27 +22,13 @@ export const api = {
     sessionId: string,
     message: string
   ): Promise<ChatResponse> {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 30000);
+    const response = await fetch(`${API_BASE_URL}/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, message })
+    });
 
-    try {
-      const response = await fetch(`${API_BASE_URL}/chat`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: sessionId, message }),
-        signal: controller.signal
-      });
-
-      clearTimeout(timeoutId);
-
-      if (!response.ok) throw new Error(`HTTP ${response.status}`);
-      return response.json();
-    } catch (error) {
-      clearTimeout(timeoutId);
-      if (error instanceof Error && error.name === 'AbortError') {
-        throw new Error('TIMEOUT');
-      }
-      throw error;
-    }
+    if (!response.ok) throw new Error(`HTTP ${response.status}`);
+    return response.json();
   }
 };
