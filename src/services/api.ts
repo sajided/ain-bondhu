@@ -22,13 +22,13 @@ export const api = {
     sessionId: string,
     message: string
   ): Promise<ChatResponse> {
-    const response = await fetch(`${API_BASE_URL}/chat`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      const response = await fetch(`${API_BASE_URL}/chat`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: sessionId, message })
-    });
+      });
 
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    return response.json();
+      if (!response.ok) throw new Error(`HTTP ${response.status}`);
+      return response.json();
   }
 };

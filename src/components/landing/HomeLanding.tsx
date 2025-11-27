@@ -24,7 +24,7 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col items-center justify-center px-4 py-16 text-center font-bengali">
+    <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 text-center font-bengali">
       <div className="max-w-2xl w-full space-y-10">
         <div className="space-y-4">
           <p className="text-primary text-lg font-semibold tracking-wide uppercase">আসসালামু আলাইকুম</p>

@@ -16,7 +16,7 @@ export const Layout: React.FC<LayoutProps> = ({
   onNavigateHome
 }) => {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 via-white to-purple-50 flex flex-col font-bengali">
+    <div className="min-h-screen flex flex-col font-bengali">
       <EmergencyBar />
       <Header
         onQuickExit={onQuickExit}

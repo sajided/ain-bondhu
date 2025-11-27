@@ -68,45 +68,55 @@ function App() {
 
   const shouldShowLanding = forceLanding || !hasEnteredChat;
 
-  if (shouldShowLanding) {
-    return (
-      <HomeLanding
-        value={landingMessage}
-        isSubmitting={isLoading}
-        onChange={setLandingMessage}
-        onSubmit={handleLandingSubmit}
-        canContinue={hasEnteredChat}
-        onContinue={hasEnteredChat ? handleReturnToChat : undefined}
-      />
-    );
-  }
+  const landingClasses = shouldShowLanding
+    ? 'opacity-100 translate-y-0 pointer-events-auto relative'
+    : 'opacity-0 -translate-y-6 pointer-events-none absolute inset-0';
+
+  const chatClasses = shouldShowLanding
+    ? 'opacity-0 translate-y-6 pointer-events-none absolute inset-0'
+    : 'opacity-100 translate-y-0 pointer-events-auto relative';
 
   return (
-    <Layout
-      onQuickExit={handleQuickExit}
-      onToggleSupport={handleToggleSupport}
-      onNavigateHome={handleNavigateHome}
-    >
-      <SupportPanel isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
-      
-      <div className="flex-1">
-        {messages.map((msg) => (
-          <ChatMessage key={msg.id} message={msg} />
-        ))}
-        
-        {isLoading && <TypingIndicator />}
-        
-        {error && (
-          <div className="text-center text-red-500 text-sm p-2 mb-4 bg-red-50 rounded">
-            {error}
-          </div>
-        )}
-        
-        <div ref={messagesEndRef} />
+    <div className="relative min-h-screen transition-colors duration-300">
+      <div className={`transition-all duration-500 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${landingClasses}`}>
+        <HomeLanding
+          value={landingMessage}
+          isSubmitting={isLoading}
+          onChange={setLandingMessage}
+          onSubmit={handleLandingSubmit}
+          canContinue={hasEnteredChat}
+          onContinue={hasEnteredChat ? handleReturnToChat : undefined}
+        />
       </div>
 
-      <ChatInput onSend={sendMessage} disabled={isLoading} />
-    </Layout>
+      <div className={`transition-all duration-500 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${chatClasses}`}>
+        <Layout
+          onQuickExit={handleQuickExit}
+          onToggleSupport={handleToggleSupport}
+          onNavigateHome={handleNavigateHome}
+        >
+          <SupportPanel isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
+          
+          <div className="flex-1">
+            {messages.map((msg) => (
+              <ChatMessage key={msg.id} message={msg} />
+            ))}
+            
+            {isLoading && <TypingIndicator />}
+            
+            {error && (
+              <div className="text-center text-red-500 text-sm p-2 mb-4 bg-red-50 rounded">
+                {error}
+              </div>
+            )}
+            
+            <div ref={messagesEndRef} />
+          </div>
+
+          <ChatInput onSend={sendMessage} disabled={isLoading} />
+        </Layout>
+      </div>
+    </div>
   );
 }
 

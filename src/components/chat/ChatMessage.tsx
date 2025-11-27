@@ -1,8 +1,6 @@
 import React from 'react';
 import ReactMarkdown from 'react-markdown';
 import type { Message } from '../../types';
-import { detectUrgency } from '../../utils/detectUrgency';
-import { EmergencyAlert } from './EmergencyAlert';
 import { INTENT_TO_LAW_MAPPING } from '../../constants/lawMapping';
 
 interface ChatMessageProps {
@@ -11,8 +9,6 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isUser = message.role === 'user';
-  const isUrgent = !isUser && detectUrgency(message.content);
-  
   // Logic: If intent exists, show the mapped law.
   // If no intent but toolsUsed has 'get_legal_knowledge', we might want to show a generic source if intent is missing.
   // But based on backend response, 'intent' field is the reliable one for the specific law.
@@ -32,11 +28,9 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
           max-w-[90%] md:max-w-[85%] rounded-2xl p-5 shadow-sm relative
           ${isUser 
             ? 'bg-green-100 text-textPrimary rounded-tr-none' 
-            : 'bg-gray-80 text-textPrimary rounded-tl-none border border-gray-100 shadow-md'}
+            : 'bg-background backdrop-blur-sm text-textPrimary rounded-tl-none border border-gray-100 shadow-md'}
         `}
       >
-        {isUrgent && <EmergencyAlert />}
-        
         <div className="prose prose-sm max-w-none font-bengali break-words prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 leading-loose text-[17px] tracking-wide">
           <ReactMarkdown
             components={{

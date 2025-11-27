@@ -8,7 +8,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onQuickExit, onToggleSupport, onNavigateHome }) => {
   return (
-    <header className="bg-primary text-white p-4 flex justify-between items-center shadow-sm sticky top-[36px] z-40">
+    <header className="bg-background backdrop-blur-lg text-primary p-4 flex justify-between items-center shadow-sm sticky top-[36px] z-40">
       <div className="flex items-center gap-2">
         <button
           type="button"
@@ -21,7 +21,7 @@ export const Header: React.FC<HeaderProps> = ({ onQuickExit, onToggleSupport, on
       <div className="flex gap-2">
         <button 
           onClick={onToggleSupport}
-          className="bg-secondary px-3 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition-colors"
+          className="bg-secondary px-3 py-1.5 rounded text-white text-sm font-medium hover:bg-opacity-90 transition-colors"
         >
           📞 সহায়ক সংস্থা
         </button>
