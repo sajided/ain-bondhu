@@ -31,6 +31,14 @@ function App() {
     }
   }, [hasUserMessages]);
 
+  // Scroll to top when returning to landing page
+  useEffect(() => {
+    const shouldShowLanding = forceLanding || !hasEnteredChat;
+    if (shouldShowLanding) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [forceLanding, hasEnteredChat]);
+
   const handleLandingSubmit = async (value: string) => {
     const trimmed = value.trim();
     if (!trimmed) return;
