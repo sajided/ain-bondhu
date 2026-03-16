@@ -1,5 +1,4 @@
 import React from 'react';
-import { EmergencyBar } from './layout/EmergencyBar';
 
 interface State {
   hasError: boolean;
@@ -16,7 +15,6 @@ export class ErrorBoundary extends React.Component<React.PropsWithChildren, Stat
     if (this.state.hasError) {
       return (
         <div className="min-h-screen flex flex-col font-bengali">
-          <EmergencyBar />
           <div className="flex-1 flex items-center justify-center p-4">
             <div className="text-center space-y-4">
               <p className="text-lg text-gray-700">কিছু একটা সমস্যা হয়েছে।</p>

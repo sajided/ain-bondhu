@@ -4,21 +4,46 @@ import { storage } from '../services/storage';
 import type { Message, ChatSession } from '../types';
 
 export const useChatSession = () => {
-  const [session, setSession] = useState<ChatSession>({
-    sessionId: '',
-    profileId: '',
-    messages: []
-  });
+  const [sessions, setSessions] = useState<ChatSession[]>([]);
+  const [currentSessionId, setCurrentSessionId] = useState<string>('');
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
 
+  // Load from local storage initially
+  useEffect(() => {
+    try {
+      const saved = localStorage.getItem('ain_bondhu_sessions');
+      if (saved) {
+        const parsed = JSON.parse(saved);
+        setSessions(parsed);
+        if (parsed.length > 0) {
+          setCurrentSessionId(parsed[parsed.length - 1].sessionId);
+        }
+      }
+    } catch (e) {
+      console.error('Failed to load sessions from storage', e);
+    }
+  }, []);
+
+  // Save to local storage whenever sessions change
+  useEffect(() => {
+    if (sessions.length > 0) {
+      localStorage.setItem('ain_bondhu_sessions', JSON.stringify(sessions));
+    }
+  }, [sessions]);
+
+  const currentSession = sessions.find(s => s.sessionId === currentSessionId) || {
+    sessionId: '',
+    profileId: '',
+    messages: []
+  };
+
   const initSession = useCallback(async (existingProfileId?: string) => {
     try {
       setError(null);
-
-      // Health check first
+      
       try {
         await api.checkHealth();
       } catch {
@@ -28,8 +53,7 @@ export const useChatSession = () => {
 
       const profileId = existingProfileId || storage.getProfileId() || undefined;
       const data = await api.createNewSession(profileId);
-
-      // Persist profile_id
+      
       storage.setProfileId(data.profile_id);
 
       const greetingMessage: Message = {
@@ -39,11 +63,15 @@ export const useChatSession = () => {
         timestamp: new Date(data.timestamp)
       };
 
-      setSession({
+      const newSession: ChatSession = {
         sessionId: data.session_id,
         profileId: data.profile_id,
         messages: [greetingMessage]
-      });
+      };
+
+      setSessions(prev => [...prev, newSession]);
+      setCurrentSessionId(data.session_id);
+      
     } catch (err) {
       console.error('Failed to initialize session:', err);
       setError('সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে আবার চেষ্টা করুন।');
@@ -53,11 +81,15 @@ export const useChatSession = () => {
   }, []);
 
   useEffect(() => {
-    initSession();
-  }, [initSession]);
+    if (sessions.length === 0) {
+      initSession();
+    } else {
+      setIsInitializing(false);
+    }
+  }, [initSession, sessions.length]);
 
   const sendMessage = useCallback(async (content: string) => {
-    if (!content.trim() || !session.sessionId) return;
+    if (!content.trim() || !currentSession.sessionId) return;
 
     const userMessage: Message = {
       id: crypto.randomUUID(),
@@ -66,14 +98,17 @@ export const useChatSession = () => {
       timestamp: new Date()
     };
 
-    setSession(prev => ({ ...prev, messages: [...prev.messages, userMessage] }));
+    setSessions(prev => prev.map(s => 
+      s.sessionId === currentSessionId ? { ...s, messages: [...s.messages, userMessage] } : s
+    ));
+    
     setIsLoading(true);
     setError(null);
     setLastFailedMessage(null);
 
     try {
-      const response = await api.sendMessage(session.profileId, session.sessionId, content);
-
+      const response = await api.sendMessage(currentSession.profileId, currentSession.sessionId, content);
+      
       const botMessage: Message = {
         id: crypto.randomUUID(),
         role: 'assistant',
@@ -82,7 +117,9 @@ export const useChatSession = () => {
         intent: response.intent
       };
 
-      setSession(prev => ({ ...prev, messages: [...prev.messages, botMessage] }));
+      setSessions(prev => prev.map(s => 
+        s.sessionId === currentSessionId ? { ...s, messages: [...s.messages, botMessage] } : s
+      ));
     } catch (err) {
       console.error('Failed to send message:', err);
       setError('দুঃখিত, একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
@@ -90,33 +127,47 @@ export const useChatSession = () => {
     } finally {
       setIsLoading(false);
     }
-  }, [session.sessionId, session.profileId]);
+  }, [currentSessionId, currentSession.profileId, currentSession.sessionId]);
 
   const startNewSession = useCallback(async () => {
     setIsInitializing(true);
     setLastFailedMessage(null);
-    await initSession(session.profileId);
-  }, [initSession, session.profileId]);
+    // Use the latest profileId we have
+    const lastProfileId = sessions.length > 0 ? sessions[sessions.length - 1].profileId : undefined;
+    await initSession(lastProfileId);
+  }, [initSession, sessions]);
+
+  const selectSession = useCallback((sessionId: string) => {
+    if (sessions.some(s => s.sessionId === sessionId)) {
+      setCurrentSessionId(sessionId);
+      setError(null);
+      setLastFailedMessage(null);
+    }
+  }, [sessions]);
 
   const retryLastMessage = useCallback(async () => {
     if (lastFailedMessage) {
-      // Remove the failed user message from the end before resending
-      setSession(prev => ({
-        ...prev,
-        messages: prev.messages.slice(0, -1)
+      setSessions(prev => prev.map(s => {
+        if (s.sessionId === currentSessionId) {
+          return { ...s, messages: s.messages.slice(0, -1) };
+        }
+        return s;
       }));
       setError(null);
       await sendMessage(lastFailedMessage);
     }
-  }, [lastFailedMessage, sendMessage]);
+  }, [lastFailedMessage, sendMessage, currentSessionId]);
 
   return {
-    messages: session.messages,
+    sessions,
+    currentSessionId,
+    messages: currentSession.messages,
     isLoading,
     isInitializing,
     error,
     sendMessage,
     startNewSession,
+    selectSession,
     retryLastMessage,
     hasFailedMessage: !!lastFailedMessage
   };

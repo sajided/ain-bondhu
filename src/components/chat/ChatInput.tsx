@@ -65,7 +65,7 @@ export const ChatInput: React.FC<ChatInputProps> = ({ onSend, disabled }) => {
         </button>
       </div>
       <div className="text-xs text-center text-gray-400 mt-2">
-        আইন বন্ধু ভুল করতে পারে। গুরুত্বপূর্ণ তথ্যের জন্য যাচাই করুন।
+        পারিবারিক আইন সহায়ক ভুল করতে পারে। গুরুত্বপূর্ণ তথ্যের জন্য যাচাই করুন।
       </div>
     </form>
   );

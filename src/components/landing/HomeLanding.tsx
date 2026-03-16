@@ -28,9 +28,9 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
     <div className="min-h-screen flex flex-col items-center justify-center px-4 py-16 text-center font-bengali">
       <div className="max-w-2xl w-full space-y-10">
         <div className="space-y-4">
-          <p className="text-primary text-lg font-semibold tracking-wide uppercase">আসসালামু আলাইকুম</p>
+          <p className="text-primary text-lg font-semibold tracking-wide uppercase">স্বাগতম</p>
           <h1 className="text-5xl sm:text-6xl font-bold text-textPrimary leading-tight">
-           <span className="text-primary">আমি আইন বন্ধু</span>
+           <span className="text-primary">আপনার পারিবারিক আইন সহায়ক</span>
           </h1>
           <p className="text-lg text-gray-500">
           আপনার আইনি সহায়ক, আপনি কি ধরনের আইনি সমস্যার মুখোমুখি?
