@@ -60,7 +60,7 @@ export const useChatSession = () => {
     if (!content.trim() || !session.sessionId) return;
 
     const userMessage: Message = {
-      id: Date.now().toString(),
+      id: crypto.randomUUID(),
       role: 'user',
       content: content,
       timestamp: new Date()
@@ -75,7 +75,7 @@ export const useChatSession = () => {
       const response = await api.sendMessage(session.profileId, session.sessionId, content);
 
       const botMessage: Message = {
-        id: Date.now().toString() + '_bot',
+        id: crypto.randomUUID(),
         role: 'assistant',
         content: response.response,
         timestamp: new Date(response.timestamp),
@@ -98,7 +98,7 @@ export const useChatSession = () => {
     await initSession(session.profileId);
   }, [initSession, session.profileId]);
 
-  const retryLastMessage = useCallback(() => {
+  const retryLastMessage = useCallback(async () => {
     if (lastFailedMessage) {
       // Remove the failed user message from the end before resending
       setSession(prev => ({
@@ -106,7 +106,7 @@ export const useChatSession = () => {
         messages: prev.messages.slice(0, -1)
       }));
       setError(null);
-      sendMessage(lastFailedMessage);
+      await sendMessage(lastFailedMessage);
     }
   }, [lastFailedMessage, sendMessage]);
 

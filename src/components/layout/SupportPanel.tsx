@@ -10,18 +10,18 @@ export const SupportPanel: React.FC<SupportPanelProps> = ({ isOpen, onClose }) =
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex justify-end">
+    <div className="fixed inset-0 z-50 flex justify-end" role="dialog" aria-modal="true" onKeyDown={(e) => { if (e.key === 'Escape') onClose(); }}>
       {/* Backdrop */}
-      <div 
+      <div
         className="absolute inset-0 bg-black bg-opacity-50 transition-opacity animate-fade-in"
         onClick={onClose}
       />
-      
+
       {/* Panel */}
       <div className="relative w-80 bg-white h-full shadow-xl p-4 overflow-y-auto animate-slide-in">
         <div className="flex justify-between items-center mb-6 border-b pb-4">
           <h2 className="text-xl font-bold text-primary">সহায়ক সংস্থা</h2>
-          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full">
+          <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full" aria-label="বন্ধ করুন">
             ✕
           </button>
         </div>
@@ -64,4 +64,3 @@ export const SupportPanel: React.FC<SupportPanelProps> = ({ isOpen, onClose }) =
     </div>
   );
 };
-

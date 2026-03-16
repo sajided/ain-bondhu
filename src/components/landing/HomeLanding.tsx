@@ -5,6 +5,7 @@ interface HomeLandingProps {
   onSubmit: (value: string) => void;
   canContinue?: boolean;
   onContinue?: () => void;
+  error?: string | null;
 }
 
 
@@ -12,7 +13,8 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
   isSubmitting,
   onSubmit,
   canContinue,
-  onContinue
+  onContinue,
+  error
 }) => {
   const [value, setValue] = useState('');
 
@@ -56,6 +58,11 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
             →
           </button>
         </form>
+        {error && (
+          <div className="bg-red-50 text-red-600 text-sm p-3 rounded-lg">
+            {error}
+          </div>
+        )}
         {canContinue && onContinue && (
           <button
             type="button"

@@ -25,14 +25,6 @@ function App() {
     scrollToBottom();
   }, [messages, isLoading]);
 
-  const hasUserMessages = messages.some(message => message.role === 'user');
-
-  useEffect(() => {
-    if (hasUserMessages) {
-      setHasEnteredChat(true);
-    }
-  }, [hasUserMessages]);
-
   // Scroll to top when returning to landing page
   useEffect(() => {
     const shouldShowLanding = forceLanding || !hasEnteredChat;
@@ -75,7 +67,7 @@ function App() {
 
   if (isInitializing) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-bg font-bengali">
+      <div className="flex items-center justify-center min-h-screen bg-neutral-100 font-bengali">
         <div className="text-primary animate-pulse text-xl">লোড হচ্ছে...</div>
       </div>
     );
@@ -99,6 +91,7 @@ function App() {
           onSubmit={handleLandingSubmit}
           canContinue={hasEnteredChat}
           onContinue={hasEnteredChat ? handleReturnToChat : undefined}
+          error={error}
         />
       </div>
 

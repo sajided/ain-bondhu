@@ -10,7 +10,6 @@ export default {
         primary: '#2D5F3F', // Deep green
         secondary: '#4A9D6F', // Lighter green
         urgent: '#D32F2F', // Red
-        bg: '#F5F5F5', // Light grey
         textPrimary: '#2C2C2C', // Almost black
       },
       fontFamily: {

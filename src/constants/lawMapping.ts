@@ -12,4 +12,3 @@ export const INTENT_TO_LAW_MAPPING: Record<string, string> = {
   'maintenance': 'পারিবারিক আদালত অধ্যাদেশ, ১৯৮৫',
   'parent_maintenance': 'পিতামাতার ভরণপোষণ আইন, ২০১৩'
 };
-
