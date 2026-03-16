@@ -3,7 +3,6 @@ import { Header } from './Header';
 
 interface LayoutProps {
   children: React.ReactNode;
-  onQuickExit: () => void;
   onNavigateHome: () => void;
   onNewSession: () => void;
   onToggleSidebar?: () => void;
@@ -11,7 +10,6 @@ interface LayoutProps {
 
 export const Layout: React.FC<LayoutProps> = ({
   children,
-  onQuickExit,
   onNavigateHome,
   onNewSession,
   onToggleSidebar
@@ -19,7 +17,6 @@ export const Layout: React.FC<LayoutProps> = ({
   return (
     <div className="min-h-screen flex flex-col font-bengali">
       <Header
-        onQuickExit={onQuickExit}
         onNavigateHome={onNavigateHome}
         onNewSession={onNewSession}
         onToggleSidebar={onToggleSidebar}

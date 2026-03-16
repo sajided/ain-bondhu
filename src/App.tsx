@@ -57,11 +57,6 @@ function App() {
     setForceLanding(false);
   };
 
-  const handleQuickExit = () => {
-    localStorage.clear();
-    window.location.href = 'https://www.weather.com';
-  };
-
   const handleToggleSidebar = () => {
     setIsSidebarOpen(!isSidebarOpen);
   };
@@ -99,7 +94,6 @@ function App() {
 
       <div className={`transition-all duration-500 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${chatClasses}`}>
         <Layout
-          onQuickExit={handleQuickExit}
           onToggleSidebar={handleToggleSidebar}
           onNavigateHome={handleNavigateHome}
           onNewSession={handleNewSession}

@@ -1,6 +1,6 @@
-# আইন বন্ধু (Ain Bondhu) — Frontend
+# পারিবারিক আইন সহায়ক (Paribarik Ain Sahayak) — Frontend
 
-AI-powered legal assistant for Bangladeshi women facing family law issues. Provides strategic, personalized legal guidance in simple Bengali through a WhatsApp-inspired chat interface.
+AI-powered family law assistant for Bangladeshi women. Provides strategic, personalized legal guidance in simple Bengali through a WhatsApp-inspired chat interface.
 
 Built for [BRAC](https://www.brac.net/) to democratize access to legal knowledge for underprivileged women who cannot afford legal representation.
 

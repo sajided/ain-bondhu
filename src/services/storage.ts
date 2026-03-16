@@ -1,5 +1,5 @@
 const KEYS = {
-  PROFILE_ID: 'ain_bandhu_profile_id'
+  PROFILE_ID: 'pas_profile_id'
 };
 
 export const storage = {

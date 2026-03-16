@@ -1,13 +1,12 @@
 import React from 'react';
 
 interface HeaderProps {
-  onQuickExit: () => void;
   onNavigateHome: () => void;
   onNewSession: () => void;
   onToggleSidebar?: () => void;
 }
 
-export const Header: React.FC<HeaderProps> = ({ onQuickExit, onNavigateHome, onNewSession, onToggleSidebar }) => {
+export const Header: React.FC<HeaderProps> = ({ onNavigateHome, onNewSession, onToggleSidebar }) => {
   return (
     <header className="bg-primary text-white px-3 py-2 flex justify-between items-center shadow-md sticky top-0 z-40">
       <div className="flex items-center gap-2">
@@ -49,12 +48,6 @@ export const Header: React.FC<HeaderProps> = ({ onQuickExit, onNavigateHome, onN
         >
           999
         </a>
-        <button
-          onClick={onQuickExit}
-          className="bg-urgent text-white px-2.5 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition-colors"
-        >
-          বন্ধ
-        </button>
       </div>
     </header>
   );

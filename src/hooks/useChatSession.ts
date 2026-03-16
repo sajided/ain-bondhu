@@ -14,7 +14,7 @@ export const useChatSession = () => {
   // Load from local storage initially
   useEffect(() => {
     try {
-      const saved = localStorage.getItem('ain_bondhu_sessions');
+      const saved = localStorage.getItem('pas_sessions');
       if (saved) {
         const parsed = JSON.parse(saved);
         setSessions(parsed);
@@ -30,7 +30,7 @@ export const useChatSession = () => {
   // Save to local storage whenever sessions change
   useEffect(() => {
     if (sessions.length > 0) {
-      localStorage.setItem('ain_bondhu_sessions', JSON.stringify(sessions));
+      localStorage.setItem('pas_sessions', JSON.stringify(sessions));
     }
   }, [sessions]);
 
