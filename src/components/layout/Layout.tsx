@@ -24,7 +24,7 @@ export const Layout: React.FC<LayoutProps> = ({
         onNewSession={onNewSession}
         onToggleSidebar={onToggleSidebar}
       />
-      <main className="flex-1 max-w-3xl mx-auto w-full p-4 pb-20 flex flex-col">
+      <main className="flex-1 max-w-3xl mx-auto w-full px-2 sm:px-4 pt-2 pb-24 flex flex-col">
         {children}
       </main>
     </div>

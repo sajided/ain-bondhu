@@ -5,14 +5,15 @@ import { ChatMessage } from './components/chat/ChatMessage';
 import { TypingIndicator } from './components/chat/TypingIndicator';
 import { Sidebar } from './components/layout/Sidebar';
 import { HomeLanding } from './components/landing/HomeLanding';
+import { BotAvatar } from './components/chat/BotAvatar';
 import { useChatSession } from './hooks/useChatSession';
 
 function App() {
-  const { 
-    sessions, currentSessionId, messages, isLoading, isInitializing, error, 
-    sendMessage, startNewSession, selectSession, retryLastMessage, hasFailedMessage 
+  const {
+    sessions, currentSessionId, messages, isLoading, isInitializing, error,
+    sendMessage, startNewSession, selectSession, retryLastMessage, hasFailedMessage
   } = useChatSession();
-  
+
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [hasEnteredChat, setHasEnteredChat] = useState(false);
   const [forceLanding, setForceLanding] = useState(false);
@@ -36,7 +37,7 @@ function App() {
   const handleLandingSubmit = async (value: string) => {
     const trimmed = value.trim();
     if (!trimmed) return;
-    
+
     setHasEnteredChat(true);
     setForceLanding(false);
     await sendMessage(trimmed);
@@ -67,7 +68,8 @@ function App() {
 
   if (isInitializing) {
     return (
-      <div className="flex items-center justify-center min-h-screen bg-neutral-100 font-bengali">
+      <div className="flex flex-col items-center justify-center min-h-screen bg-chatBg font-bengali gap-4">
+        <BotAvatar size={56} />
         <div className="text-primary animate-pulse text-xl">লোড হচ্ছে...</div>
       </div>
     );
@@ -75,36 +77,36 @@ function App() {
 
   const shouldShowLanding = forceLanding || !hasEnteredChat;
 
-  const landingClasses = shouldShowLanding 
-    ? 'opacity-100 translate-y-0 pointer-events-auto relative' 
+  const landingClasses = shouldShowLanding
+    ? 'opacity-100 translate-y-0 pointer-events-auto relative'
     : 'opacity-0 -translate-y-6 pointer-events-none absolute inset-0';
-    
-  const chatClasses = shouldShowLanding 
-    ? 'opacity-0 translate-y-6 pointer-events-none absolute inset-0' 
+
+  const chatClasses = shouldShowLanding
+    ? 'opacity-0 translate-y-6 pointer-events-none absolute inset-0'
     : 'opacity-100 translate-y-0 pointer-events-auto relative';
 
   return (
     <div className="relative min-h-screen transition-colors duration-300">
       <div className={`transition-all duration-500 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${landingClasses}`}>
-        <HomeLanding 
-          isSubmitting={isLoading} 
-          onSubmit={handleLandingSubmit} 
+        <HomeLanding
+          isSubmitting={isLoading}
+          onSubmit={handleLandingSubmit}
           canContinue={hasEnteredChat}
           onContinue={hasEnteredChat ? handleReturnToChat : undefined}
-          error={error} 
+          error={error}
         />
       </div>
 
       <div className={`transition-all duration-500 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${chatClasses}`}>
-        <Layout 
-          onQuickExit={handleQuickExit} 
-          onToggleSidebar={handleToggleSidebar} 
+        <Layout
+          onQuickExit={handleQuickExit}
+          onToggleSidebar={handleToggleSidebar}
           onNavigateHome={handleNavigateHome}
           onNewSession={handleNewSession}
         >
-          <Sidebar 
-            isOpen={isSidebarOpen} 
-            onClose={() => setIsSidebarOpen(false)} 
+          <Sidebar
+            isOpen={isSidebarOpen}
+            onClose={() => setIsSidebarOpen(false)}
             sessions={sessions}
             currentSessionId={currentSessionId}
             onSelectSession={selectSession}
@@ -112,17 +114,25 @@ function App() {
           />
 
           <div className="flex-1">
+            {/* WhatsApp-style system notice */}
+            <div className="flex justify-center my-3">
+              <div className="bg-[#FCF4CB] text-[12px] text-gray-700 px-4 py-2 rounded-lg shadow-sm text-center max-w-[90%] sm:max-w-md">
+                <p>পারিবারিক আইন সহায়ক ভুল করতে পারে। গুরুত্বপূর্ণ তথ্যের জন্য যাচাই করুন।</p>
+                <p className="text-[11px] text-gray-500 mt-1">জরুরি: ৯৯৯ | নারী সহায়তা: ১০৯২১</p>
+              </div>
+            </div>
+
             {messages.map((msg) => (
               <ChatMessage key={msg.id} message={msg} />
             ))}
-            
+
             {isLoading && <TypingIndicator />}
-            
+
             {error && (
               <div className="text-center text-sm p-3 mb-4 bg-red-50 rounded-lg">
                 <p className="text-red-500 mb-2">{error}</p>
                 {hasFailedMessage && (
-                  <button 
+                  <button
                     onClick={retryLastMessage}
                     className="bg-primary text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition-colors"
                   >
@@ -131,7 +141,7 @@ function App() {
                 )}
               </div>
             )}
-            
+
             <div ref={messagesEndRef} />
           </div>
 

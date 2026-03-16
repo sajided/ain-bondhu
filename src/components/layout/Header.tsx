@@ -9,38 +9,51 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onQuickExit, onNavigateHome, onNewSession, onToggleSidebar }) => {
   return (
-    <header className="bg-white text-primary p-4 flex justify-between items-center shadow-sm sticky top-[36px] z-40">
+    <header className="bg-primary text-white px-3 py-2 flex justify-between items-center shadow-md sticky top-0 z-40">
       <div className="flex items-center gap-2">
         {onToggleSidebar && (
           <button
             type="button"
             onClick={onToggleSidebar}
-            className="p-2 hover:bg-gray-100 rounded-md transition-colors"
+            className="p-1.5 hover:bg-white/10 rounded-md transition-colors"
             aria-label="Toggle Sidebar"
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+            <svg xmlns="http://www.w3.org/2000/svg" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
           </button>
         )}
+        <div className="w-9 h-9 rounded-full bg-secondary flex items-center justify-center text-white font-bold text-sm flex-shrink-0">
+          আ
+        </div>
         <button
           type="button"
           onClick={onNavigateHome}
-          className="text-xl font-bold focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
+          className="text-left focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70 rounded"
         >
-          পারিবারিক আইন সহায়ক
+          <div className="text-base font-bold leading-tight">পারিবারিক আইন সহায়ক</div>
+          <div className="text-[11px] text-white/70 leading-tight">আপনার আইনি সহায়ক</div>
         </button>
       </div>
-      <div className="flex gap-2">
+      <div className="flex items-center gap-1.5">
         <button
           onClick={onNewSession}
-          className="bg-primary px-3 py-1.5 rounded text-white text-sm font-medium hover:bg-opacity-90 transition-colors"
+          className="p-2 hover:bg-white/10 rounded-full transition-colors"
+          aria-label="নতুন কথোপকথন"
+          title="নতুন কথোপকথন"
         >
-          নতুন কথোপকথন
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
         </button>
+        <a
+          href="tel:999"
+          className="w-8 h-8 rounded-full bg-urgent flex items-center justify-center text-white text-xs font-bold"
+          title="জরুরি: ৯৯৯"
+        >
+          999
+        </a>
         <button
           onClick={onQuickExit}
-          className="bg-white text-urgent border border-urgent px-3 py-1.5 rounded text-sm font-bold hover:bg-gray-100 transition-colors"
+          className="bg-urgent text-white px-2.5 py-1.5 rounded text-xs font-bold hover:bg-red-700 transition-colors"
         >
-          দ্রুত বন্ধ করুন
+          বন্ধ
         </button>
       </div>
     </header>

@@ -10,37 +10,37 @@ interface SidebarProps {
   onNewSession: () => void;
 }
 
-export const Sidebar: React.FC<SidebarProps> = ({ 
-  isOpen, 
-  onClose, 
-  sessions, 
-  currentSessionId, 
+export const Sidebar: React.FC<SidebarProps> = ({
+  isOpen,
+  onClose,
+  sessions,
+  currentSessionId,
   onSelectSession,
   onNewSession
 }) => {
   return (
     <>
-      <div 
+      <div
         className={`fixed inset-0 bg-black/40 z-40 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'}`}
         onClick={onClose}
         aria-hidden="true"
       />
-      
-      <div 
+
+      <div
         className={`fixed top-0 left-0 h-full w-80 bg-white z-50 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-x-0' : '-translate-x-full'} shadow-2xl flex flex-col font-bengali`}
       >
-        <div className="p-4 border-b border-gray-100 flex justify-between items-center bg-gray-50">
-          <h2 className="text-xl font-bold text-primary">কথোপকথন</h2>
-          <button 
+        <div className="px-4 py-3 flex justify-between items-center bg-primary text-white">
+          <h2 className="text-lg font-bold">কথোপকথন</h2>
+          <button
             type="button"
             onClick={onClose}
-            className="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-full transition-colors"
+            className="p-1.5 text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-colors"
           >
             ✕
           </button>
         </div>
 
-        <div className="p-4">
+        <div className="p-3">
           <button
             onClick={() => {
               onNewSession();
@@ -66,17 +66,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     onSelectSession(session.sessionId);
                     onClose();
                   }}
-                  className={`w-full text-left px-4 py-3 rounded-lg transition-colors group flex flex-col gap-1
-                    ${currentSessionId === session.sessionId 
-                      ? 'bg-primary/10 text-primary font-medium' 
+                  className={`w-full text-left px-3 py-2.5 rounded-lg transition-colors group flex items-center gap-2.5
+                    ${currentSessionId === session.sessionId
+                      ? 'bg-primary/10 text-primary font-medium'
                       : 'hover:bg-gray-100 text-gray-700'
                     }`}
                 >
-                  <div className="text-sm line-clamp-1">
-                    {session.messages?.[1]?.content || 'নতুন কথোপকথন'}
+                  <div className="w-8 h-8 rounded-full bg-secondary/20 flex items-center justify-center text-secondary text-xs font-bold flex-shrink-0">
+                    আ
                   </div>
-                  <div className={`text-xs ${currentSessionId === session.sessionId ? 'text-primary/70' : 'text-gray-400'}`}>
-                    {session.messages?.[0]?.timestamp ? new Date(session.messages[0].timestamp).toLocaleDateString() : 'আজ'}
+                  <div className="flex flex-col gap-0.5 min-w-0">
+                    <div className="text-sm line-clamp-1">
+                      {session.messages?.[1]?.content || 'নতুন কথোপকথন'}
+                    </div>
+                    <div className={`text-xs ${currentSessionId === session.sessionId ? 'text-primary/70' : 'text-gray-400'}`}>
+                      {session.messages?.[0]?.timestamp ? new Date(session.messages[0].timestamp).toLocaleDateString() : 'আজ'}
+                    </div>
                   </div>
                 </button>
               ))}
