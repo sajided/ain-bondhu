@@ -9,10 +9,7 @@ interface ChatMessageProps {
 
 export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
   const isUser = message.role === 'user';
-  // Logic: If intent exists, show the mapped law.
-  // If no intent but toolsUsed has 'get_legal_knowledge', we might want to show a generic source if intent is missing.
-  // But based on backend response, 'intent' field is the reliable one for the specific law.
-  
+
   const sources: string[] = [];
   if (message.intent) {
     const lawName = INTENT_TO_LAW_MAPPING[message.intent];
@@ -23,15 +20,15 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
 
   return (
     <div className={`flex w-full mb-6 ${isUser ? 'justify-end' : 'justify-start'}`}>
-      <div 
+      <div
         className={`
           max-w-[90%] md:max-w-[85%] rounded-2xl p-5 shadow-sm relative
-          ${isUser 
-            ? 'bg-green-100 text-textPrimary rounded-tr-none' 
-            : 'bg-background backdrop-blur-sm text-textPrimary rounded-tl-none border border-gray-100 shadow-md'}
+          ${isUser
+            ? 'bg-green-100 text-textPrimary rounded-tr-none'
+            : 'bg-white text-textPrimary rounded-tl-none border border-gray-100 shadow-md'}
         `}
       >
-        <div className="prose prose-sm max-w-none font-bengali break-words prose-p:my-2 prose-ul:my-2 prose-li:my-0.5 leading-loose text-[17px] tracking-wide">
+        <div className="max-w-none font-bengali break-words leading-loose text-[17px] tracking-wide">
           <ReactMarkdown
             components={{
               strong: ({node, ...props}) => <span className="font-bold text-primary" {...props} />,
@@ -59,10 +56,6 @@ export const ChatMessage: React.FC<ChatMessageProps> = ({ message }) => {
             </div>
           </div>
         )}
-
-        {/* <div className={`text-[10px] mt-2 ${isUser ? 'text-right text-green-800/60' : 'text-left text-gray-400'}`}>
-          {new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
-        </div> */}
       </div>
     </div>
   );

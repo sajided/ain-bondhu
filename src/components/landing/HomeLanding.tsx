@@ -1,9 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 interface HomeLandingProps {
-  value: string;
   isSubmitting: boolean;
-  onChange: (value: string) => void;
   onSubmit: (value: string) => void;
   canContinue?: boolean;
   onContinue?: () => void;
@@ -11,16 +9,17 @@ interface HomeLandingProps {
 
 
 export const HomeLanding: React.FC<HomeLandingProps> = ({
-  value,
   isSubmitting,
-  onChange,
   onSubmit,
   canContinue,
   onContinue
 }) => {
+  const [value, setValue] = useState('');
+
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit(value);
+    setValue('');
   };
 
   return (
@@ -28,10 +27,10 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
       <div className="max-w-2xl w-full space-y-10">
         <div className="space-y-4">
           <p className="text-primary text-lg font-semibold tracking-wide uppercase">আসসালামু আলাইকুম</p>
-          <h1 className="text-5xl sm:text-6xl font-bold text-heading leading-tight">
+          <h1 className="text-5xl sm:text-6xl font-bold text-textPrimary leading-tight">
            <span className="text-primary">আমি আইন বন্ধু</span>
           </h1>
-          <p className="text-lg text-muted">
+          <p className="text-lg text-gray-500">
           আপনার আইনি সহায়ক, আপনি কি ধরনের আইনি সমস্যার মুখোমুখি?
           </p>
         </div>
@@ -43,9 +42,9 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
           <input
             type="text"
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => setValue(e.target.value)}
             placeholder="কোন দ্বিধা নেই, বলতে পারেন..."
-            className="flex-1 bg-transparent outline-none text-base sm:text-lg text-heading placeholder:text-muted"
+            className="flex-1 bg-transparent outline-none text-base sm:text-lg text-textPrimary placeholder:text-gray-500"
             disabled={isSubmitting}
           />
           <button
@@ -57,20 +56,16 @@ export const HomeLanding: React.FC<HomeLandingProps> = ({
             →
           </button>
         </form>
-
-        
-
         {canContinue && onContinue && (
           <button
             type="button"
             onClick={onContinue}
             className="mx-auto inline-flex items-center gap-2 px-6 py-3 rounded-full border border-primary/30 text-primary font-medium hover:bg-primary/5 transition"
           >
-            আগের আলোচনা চালিয়ে যান →
+            আগের আলোচনা চালিয়ে যান →
           </button>
         )}
       </div>
     </div>
   );
 };
-

@@ -32,4 +32,3 @@ export const EMERGENCY_CONTACTS: EmergencyContact[] = [
     category: 'legal_aid'
   }
 ];
-

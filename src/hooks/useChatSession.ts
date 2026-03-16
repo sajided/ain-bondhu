@@ -6,60 +6,55 @@ import type { Message, ChatSession } from '../types';
 export const useChatSession = () => {
   const [session, setSession] = useState<ChatSession>({
     sessionId: '',
-    userId: '',
+    profileId: '',
     messages: []
   });
   const [isLoading, setIsLoading] = useState(false);
   const [isInitializing, setIsInitializing] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
 
-  // Initialize session
-  useEffect(() => {
-    const initSession = async () => {
+  const initSession = useCallback(async (existingProfileId?: string) => {
+    try {
+      setError(null);
+
+      // Health check first
       try {
-        let sessionId = storage.getSessionId();
-        let userId = storage.getUserId();
-        let savedMessages = storage.getMessages();
-
-        if (sessionId && userId) {
-          // Hydrate dates from JSON
-          const hydratedMessages = savedMessages.map((msg: any) => ({
-            ...msg,
-            timestamp: new Date(msg.timestamp)
-          }));
-          setSession({ sessionId, userId, messages: hydratedMessages });
-        } else {
-          // Create new session
-          userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
-          const data = await api.createNewSession(userId);
-          
-          const initialMessage: Message = {
-            id: 'init',
-            role: 'assistant',
-            content: data.greeting,
-            timestamp: new Date(data.timestamp)
-          };
-
-          sessionId = data.session_id;
-          const newMessages = [initialMessage];
-
-          // Save to storage
-          storage.setSessionId(sessionId);
-          storage.setUserId(userId);
-          storage.setMessages(newMessages);
-
-          setSession({ sessionId, userId, messages: newMessages });
-        }
-      } catch (err) {
-        console.error('Failed to initialize session:', err);
-        setError('সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে আবার চেষ্টা করুন।');
-      } finally {
-        setIsInitializing(false);
+        await api.checkHealth();
+      } catch {
+        setError('সার্ভারের সাথে সংযোগ করা যাচ্ছে না। অনুগ্রহ করে নিশ্চিত করুন যে সার্ভার চালু আছে।');
+        return;
       }
-    };
 
-    initSession();
+      const profileId = existingProfileId || storage.getProfileId() || undefined;
+      const data = await api.createNewSession(profileId);
+
+      // Persist profile_id
+      storage.setProfileId(data.profile_id);
+
+      const greetingMessage: Message = {
+        id: `greeting_${Date.now()}`,
+        role: 'assistant',
+        content: data.greeting,
+        timestamp: new Date(data.timestamp)
+      };
+
+      setSession({
+        sessionId: data.session_id,
+        profileId: data.profile_id,
+        messages: [greetingMessage]
+      });
+    } catch (err) {
+      console.error('Failed to initialize session:', err);
+      setError('সংযোগ স্থাপন করা যাচ্ছে না। অনুগ্রহ করে আবার চেষ্টা করুন।');
+    } finally {
+      setIsInitializing(false);
+    }
   }, []);
+
+  useEffect(() => {
+    initSession();
+  }, [initSession]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || !session.sessionId) return;
@@ -71,40 +66,49 @@ export const useChatSession = () => {
       timestamp: new Date()
     };
 
-    // Optimistic update
-    const updatedMessages = [...session.messages, userMessage];
-    setSession(prev => ({ ...prev, messages: updatedMessages }));
-    storage.setMessages(updatedMessages);
+    setSession(prev => ({ ...prev, messages: [...prev.messages, userMessage] }));
     setIsLoading(true);
     setError(null);
+    setLastFailedMessage(null);
 
     try {
-      const response = await api.sendMessage(session.sessionId, content);
-      
+      const response = await api.sendMessage(session.profileId, session.sessionId, content);
+
       const botMessage: Message = {
         id: Date.now().toString() + '_bot',
         role: 'assistant',
         content: response.response,
         timestamp: new Date(response.timestamp),
-        toolsUsed: response.tools_used,
-        intent: response.intent // Capture intent
+        intent: response.intent
       };
 
-      const finalMessages = [...updatedMessages, botMessage];
-      setSession(prev => ({ ...prev, messages: finalMessages }));
-      storage.setMessages(finalMessages);
+      setSession(prev => ({ ...prev, messages: [...prev.messages, botMessage] }));
     } catch (err) {
       console.error('Failed to send message:', err);
       setError('দুঃখিত, একটি সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।');
+      setLastFailedMessage(content);
     } finally {
       setIsLoading(false);
     }
-  }, [session.sessionId, session.messages]);
+  }, [session.sessionId, session.profileId]);
 
-  const clearSession = useCallback(() => {
-    storage.clearAll();
-    window.location.reload(); 
-  }, []);
+  const startNewSession = useCallback(async () => {
+    setIsInitializing(true);
+    setLastFailedMessage(null);
+    await initSession(session.profileId);
+  }, [initSession, session.profileId]);
+
+  const retryLastMessage = useCallback(() => {
+    if (lastFailedMessage) {
+      // Remove the failed user message from the end before resending
+      setSession(prev => ({
+        ...prev,
+        messages: prev.messages.slice(0, -1)
+      }));
+      setError(null);
+      sendMessage(lastFailedMessage);
+    }
+  }, [lastFailedMessage, sendMessage]);
 
   return {
     messages: session.messages,
@@ -112,6 +116,8 @@ export const useChatSession = () => {
     isInitializing,
     error,
     sendMessage,
-    clearSession
+    startNewSession,
+    retryLastMessage,
+    hasFailedMessage: !!lastFailedMessage
   };
 };

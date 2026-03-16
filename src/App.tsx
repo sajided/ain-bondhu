@@ -8,11 +8,13 @@ import { HomeLanding } from './components/landing/HomeLanding';
 import { useChatSession } from './hooks/useChatSession';
 
 function App() {
-  const { messages, isLoading, isInitializing, error, sendMessage } = useChatSession();
+  const {
+    messages, isLoading, isInitializing, error,
+    sendMessage, startNewSession, retryLastMessage, hasFailedMessage
+  } = useChatSession();
   const [isSupportOpen, setIsSupportOpen] = useState(false);
   const [hasEnteredChat, setHasEnteredChat] = useState(false);
   const [forceLanding, setForceLanding] = useState(false);
-  const [landingMessage, setLandingMessage] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -45,7 +47,6 @@ function App() {
 
     setHasEnteredChat(true);
     setForceLanding(false);
-    setLandingMessage('');
     await sendMessage(trimmed);
   };
 
@@ -54,6 +55,12 @@ function App() {
   };
 
   const handleReturnToChat = () => {
+    setForceLanding(false);
+  };
+
+  const handleNewSession = async () => {
+    await startNewSession();
+    setHasEnteredChat(true);
     setForceLanding(false);
   };
 
@@ -88,9 +95,7 @@ function App() {
     <div className="relative min-h-screen transition-colors duration-300">
       <div className={`transition-all duration-500 ease-[cubic-bezier(0.4,0.0,0.2,1)] ${landingClasses}`}>
         <HomeLanding
-          value={landingMessage}
           isSubmitting={isLoading}
-          onChange={setLandingMessage}
           onSubmit={handleLandingSubmit}
           canContinue={hasEnteredChat}
           onContinue={hasEnteredChat ? handleReturnToChat : undefined}
@@ -102,22 +107,31 @@ function App() {
           onQuickExit={handleQuickExit}
           onToggleSupport={handleToggleSupport}
           onNavigateHome={handleNavigateHome}
+          onNewSession={handleNewSession}
         >
           <SupportPanel isOpen={isSupportOpen} onClose={() => setIsSupportOpen(false)} />
-          
+
           <div className="flex-1">
             {messages.map((msg) => (
               <ChatMessage key={msg.id} message={msg} />
             ))}
-            
+
             {isLoading && <TypingIndicator />}
-            
+
             {error && (
-              <div className="text-center text-red-500 text-sm p-2 mb-4 bg-red-50 rounded">
-                {error}
+              <div className="text-center text-sm p-3 mb-4 bg-red-50 rounded-lg">
+                <p className="text-red-500 mb-2">{error}</p>
+                {hasFailedMessage && (
+                  <button
+                    onClick={retryLastMessage}
+                    className="bg-primary text-white px-4 py-1.5 rounded text-sm font-medium hover:bg-opacity-90 transition-colors"
+                  >
+                    আবার চেষ্টা করুন
+                  </button>
+                )}
               </div>
             )}
-            
+
             <div ref={messagesEndRef} />
           </div>
 
