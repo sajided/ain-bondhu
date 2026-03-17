@@ -15,7 +15,13 @@ function App() {
   } = useChatSession();
 
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [hasEnteredChat, setHasEnteredChat] = useState(false);
+  const [hasEnteredChat, setHasEnteredChat] = useState(() => {
+    const saved = localStorage.getItem('pas_sessions');
+    if (saved) {
+      try { return JSON.parse(saved).length > 0; } catch { return false; }
+    }
+    return false;
+  });
   const [forceLanding, setForceLanding] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

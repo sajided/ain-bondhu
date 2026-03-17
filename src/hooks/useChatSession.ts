@@ -11,19 +11,26 @@ export const useChatSession = () => {
   const [error, setError] = useState<string | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
 
-  // Load from local storage initially
+  // Load from local storage and initialize if needed
   useEffect(() => {
+    let loaded: ChatSession[] = [];
     try {
       const saved = localStorage.getItem('pas_sessions');
       if (saved) {
-        const parsed = JSON.parse(saved);
-        setSessions(parsed);
-        if (parsed.length > 0) {
-          setCurrentSessionId(parsed[parsed.length - 1].sessionId);
+        loaded = JSON.parse(saved);
+        setSessions(loaded);
+        if (loaded.length > 0) {
+          setCurrentSessionId(loaded[loaded.length - 1].sessionId);
         }
       }
     } catch (e) {
       console.error('Failed to load sessions from storage', e);
+    }
+
+    if (loaded.length === 0) {
+      initSession();
+    } else {
+      setIsInitializing(false);
     }
   }, []);
 
@@ -79,14 +86,6 @@ export const useChatSession = () => {
       setIsInitializing(false);
     }
   }, []);
-
-  useEffect(() => {
-    if (sessions.length === 0) {
-      initSession();
-    } else {
-      setIsInitializing(false);
-    }
-  }, [initSession, sessions.length]);
 
   const sendMessage = useCallback(async (content: string) => {
     if (!content.trim() || !currentSession.sessionId) return;
