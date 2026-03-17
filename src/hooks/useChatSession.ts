@@ -67,7 +67,7 @@ export const useChatSession = () => {
         id: `greeting_${Date.now()}`,
         role: 'assistant',
         content: data.greeting,
-        timestamp: new Date(data.timestamp)
+        timestamp: new Date()
       };
 
       const newSession: ChatSession = {
@@ -112,7 +112,7 @@ export const useChatSession = () => {
         id: crypto.randomUUID(),
         role: 'assistant',
         content: response.response,
-        timestamp: new Date(response.timestamp),
+        timestamp: new Date(),
         intent: response.intent
       };
 
