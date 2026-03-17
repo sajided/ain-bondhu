@@ -3,34 +3,34 @@ import { api } from '../services/api';
 import { storage } from '../services/storage';
 import type { Message, ChatSession } from '../types';
 
+function loadSavedSessions(): ChatSession[] {
+  try {
+    const saved = localStorage.getItem('pas_sessions');
+    if (saved) {
+      const parsed = JSON.parse(saved);
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
+    }
+  } catch (e) {
+    console.error('Failed to load sessions from storage', e);
+  }
+  return [];
+}
+
 export const useChatSession = () => {
-  const [sessions, setSessions] = useState<ChatSession[]>([]);
-  const [currentSessionId, setCurrentSessionId] = useState<string>('');
+  const [sessions, setSessions] = useState<ChatSession[]>(loadSavedSessions);
+  const [currentSessionId, setCurrentSessionId] = useState<string>(() => {
+    const saved = loadSavedSessions();
+    return saved.length > 0 ? saved[saved.length - 1].sessionId : '';
+  });
   const [isLoading, setIsLoading] = useState(false);
-  const [isInitializing, setIsInitializing] = useState(true);
+  const [isInitializing, setIsInitializing] = useState(() => loadSavedSessions().length === 0);
   const [error, setError] = useState<string | null>(null);
   const [lastFailedMessage, setLastFailedMessage] = useState<string | null>(null);
 
-  // Load from local storage and initialize if needed
+  // Initialize a new session if none were saved
   useEffect(() => {
-    let loaded: ChatSession[] = [];
-    try {
-      const saved = localStorage.getItem('pas_sessions');
-      if (saved) {
-        loaded = JSON.parse(saved);
-        setSessions(loaded);
-        if (loaded.length > 0) {
-          setCurrentSessionId(loaded[loaded.length - 1].sessionId);
-        }
-      }
-    } catch (e) {
-      console.error('Failed to load sessions from storage', e);
-    }
-
-    if (loaded.length === 0) {
+    if (sessions.length === 0) {
       initSession();
-    } else {
-      setIsInitializing(false);
     }
   }, []);
 
